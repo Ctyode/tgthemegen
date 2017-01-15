@@ -29,6 +29,9 @@ class Color:
                      blue=(i & 0x0000ff00) >> 8,
                      alpha=(i & 0x000000ff))
 
+    def __repr__(self):
+        return ('<{} {}>'.format(self.__class__.__name__, str(self)))
+
     def __str__(self):
         return ('#{:x}{:x}{:x}{:x}'
                 .format(self.red, self.green, self.blue, self.alpha))
