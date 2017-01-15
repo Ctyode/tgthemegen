@@ -11,7 +11,7 @@ class ColorParseError(Exception):
 
 class Color:
 
-    color_regex = re.compile(r'[0-9a-fA-F]{6,8}')
+    color_regex = re.compile(r'^[0-9a-fA-F]{6,8}$')
 
     def __init__(self, red: int, green: int, blue: int, alpha: int=None):
         self.red = red
@@ -22,7 +22,7 @@ class Color:
     @classmethod
     def parse(cls, s: str):
         s = s.strip('#')
-        if len(cls.color_regex.findall(s)) == 1: 
+        if cls.color_regex.match(s): 
             i = int(s, base=16)
             if len(s) == 6:
                 return Color(red  =(i & 0xff0000) >> 16,
