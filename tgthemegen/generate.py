@@ -10,7 +10,7 @@ class ColorParseError(Exception):
 
 class Color:
 
-    def __init__(self, red: int, green: int, blue: int, alpha: int=0xFF):
+    def __init__(self, red: int, green: int, blue: int, alpha: int=None):
         self.red = red
         self.green = green
         self.blue = blue
@@ -19,22 +19,29 @@ class Color:
     @staticmethod
     def parse(s: str):
         s = s.strip('#')
-        s = (s + 'ff') if len(s) == 6 else s
-        if len(s) != 8:
-            raise ColorParseError(s)
         i = int(s, base=16)
-
-        return Color(red=(i & 0xff000000) >> 24,
-                     green=(i & 0x00ff0000) >> 16,
-                     blue=(i & 0x0000ff00) >> 8,
-                     alpha=(i & 0x000000ff))
+        if len(s) == 6:
+            return Color(red  =(i & 0xff0000) >> 16,
+                         green=(i & 0x00ff00) >> 8,
+                         blue =(i & 0x0000ff))
+        elif len(s) == 8:
+            return Color(red  =(i & 0xff000000) >> 24,
+                         green=(i & 0x00ff0000) >> 16,
+                         blue =(i & 0x0000ff00) >> 8,
+                         alpha=(i & 0x000000ff))
+        else:
+            raise ColorParseError(s)
 
     def __repr__(self):
         return ('<{} {}>'.format(self.__class__.__name__, str(self)))
 
     def __str__(self):
-        return ('#{:x}{:x}{:x}{:x}'
-                .format(self.red, self.green, self.blue, self.alpha))
+        if self.alpha is not None:
+            return ('#{:02x}{:02x}{:02x}{:02x}'
+                    .format(self.red, self.green, self.blue, self.alpha))
+        else:
+            return ('#{:02x}{:02x}{:02x}'
+                    .format(self.red, self.green, self.blue))
 
 
 def generate(primary: Color, accent: Color, background: Color) -> dict:
