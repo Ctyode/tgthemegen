@@ -4,7 +4,6 @@ import tgthemegen
 
 
 class ColorParseError(Exception):
-
     def __init__(self, color: str):
         super().__init__('invalid color literal: {}'.format(color))
 

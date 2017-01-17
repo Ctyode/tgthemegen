@@ -5,7 +5,6 @@ __author__ = 'rawieo, ctyode'
 
 
 class ColorSource(Enum):
-
     primary = 0
     accent = 1
     background = 2
@@ -14,7 +13,6 @@ class ColorSource(Enum):
 
 
 class ColorProperty:
-
     def __init__(self, source: ColorSource, color: Color=None, transform=None):
         self.source = source
         self.color = color
@@ -31,24 +29,24 @@ properties = {
     'windowSubTextFgOver': ColorProperty(source=ColorSource.foreground, transform='todo'),  # TODO
     'windowBoldFg': ColorProperty(source=ColorSource.foreground, transform='todo'),  # TODO
     'windowBoldFgOver': 'windowBoldFg',
-    'windowBgActive': '#e34053',  # TODO
-    'windowFgActive': '#ffffff',  # TODO
-    'windowActiveTextFg': '#a4000a',
-    'windowShadowFg': '#000000', # норм
+    'windowBgActive': ColorProperty(source=ColorSource.accent),  # TODO
+    'windowFgActive': ColorProperty(source=ColorSource.foreground),  # TODO
+    'windowActiveTextFg': ColorProperty(source=ColorProperty.primary),
+    'windowShadowFg': '#000000',
     'windowShadowFgFallback': '#f1f1f1',
-    'shadowFg': '#00000018', # норм
+    'shadowFg': '#00000018',
     'slideFadeOutBg': '#0000003c',
     'slideFadeOutShadowFg': 'windowShadowFg',
     'imageBg': '#000000',
     'imageBgTransparent': '#ffffff',
     'activeButtonBg': 'windowBgActive',
-    'activeButtonBgOver': '#f77375',
-    'activeButtonBgRipple': '#f88182',
+    'activeButtonBgOver': ColorProperty(source=ColorSource.accent, transform='todo'),  # TODO
+    'activeButtonBgRipple': ColorProperty(source=ColorSource.accent, transform='todo'),  # TODO
     'activeButtonFg': 'windowFgActive',
     'activeButtonFgOver': 'activeButtonFg',
-    'activeButtonSecondaryFg': '#cceeff',
+    'activeButtonSecondaryFg': ColorProperty(source=ColorSource.foreground, transform='todo'),
     'activeButtonSecondaryFgOver': 'activeButtonSecondaryFg',
-    'activeLineFg': '#cb444e',
+    'activeLineFg': ColorProperty(source=ColorSource.primary),  # TODO
     'activeLineFgError': '#cc434c',
     'lightButtonBg': 'windowBg',
     'lightButtonBgOver': '#fef1f1',
