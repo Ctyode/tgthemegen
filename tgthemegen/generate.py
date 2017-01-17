@@ -25,13 +25,13 @@ class Color:
         if cls.color_regex.match(s): 
             i = int(s, base=16)
             if len(s) == 6:
-                return Color(red  =(i & 0xff0000) >> 16,
+                return Color(red=(i & 0xff0000) >> 16,
                              green=(i & 0x00ff00) >> 8,
-                             blue =(i & 0x0000ff))
+                             blue=(i & 0x0000ff))
             elif len(s) == 8:
-                return Color(red  =(i & 0xff000000) >> 24,
+                return Color(red=(i & 0xff000000) >> 24,
                              green=(i & 0x00ff0000) >> 16,
-                             blue =(i & 0x0000ff00) >> 8,
+                             blue=(i & 0x0000ff00) >> 8,
                              alpha=(i & 0x000000ff))
             else:
                 raise ColorParseError(s)
