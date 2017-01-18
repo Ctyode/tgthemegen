@@ -1,7 +1,7 @@
 from enum import Enum
 from tgthemegen.generate import Color
 
-__author__ = 'rawieo, ctyode'
+__author__ = 'rawieo, ctyode'  # self.__пидор__('ты')
 
 
 class ColorSource(Enum):
@@ -17,6 +17,9 @@ class ColorProperty:
         self.source = source
         self.color = color
         self.transform = transform
+
+    def calculate(self, primary, accent):
+        pass  # TODO
 
 
 properties = {

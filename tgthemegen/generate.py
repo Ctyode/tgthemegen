@@ -38,18 +38,15 @@ class Color:
             raise ColorParseError(s)
 
     def __repr__(self):
-        return ('<{} {}>'.format(self.__class__.__name__, str(self)))
+        return f'<{self.__class__.__name__} {str(self)}>'  # self.ты('пидор')
 
     def __str__(self):
         if self.alpha is not None:
-            return ('#{:02x}{:02x}{:02x}{:02x}'
-                    .format(self.red, self.green, self.blue, self.alpha))
+            return f'#{self.red:02x}{self.green:02x}{self.blue:02x}{self.alpha:02x}'
         else:
-            return ('#{:02x}{:02x}{:02x}'
-                    .format(self.red, self.green, self.blue))
+            return f'#{self.red:02x}{self.green:02x}{self.blue:02x}'
 
 
-def generate(primary: Color, accent: Color, background: Color) -> dict:
-    return dict(map(
-        lambda x: (x, random.choice([primary, accent, background])),
-        tgthemegen.properties))
+def generate(primary: Color, accent: Color, background: Color) -> (str, str):
+    for (key, value) in tgthemegen.properties.items():
+        yield (key, value if type(value) else value.calculate(primary, accent))
