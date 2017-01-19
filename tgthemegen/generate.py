@@ -37,6 +37,26 @@ class Color:
         else:
             raise ColorParseError(s)
 
+    def repr_int(self):
+        if self.alpha is not None:
+            return (
+                self.red >> 24 |
+                self.green >> 16 |
+                self.blue >> 8 |
+                self.alpha)
+        else:
+            return (
+                self.red >> 24 |
+                self.green >> 16 |
+                self.blue >> 8)
+
+    @staticmethod
+    def from_int(i: int):
+        return Color(red=(i & 0xff000000) >> 24,
+                     green=(i & 0x00ff0000) >> 16,
+                     blue=(i & 0x0000ff00) >> 8,
+                     alpha=(i & 0x000000ff))
+
     def __repr__(self):
         return f'<{self.__class__.__name__} {str(self)}>'  # self.ты('пидор')
 
@@ -47,6 +67,6 @@ class Color:
             return f'#{self.red:02x}{self.green:02x}{self.blue:02x}'
 
 
-def generate(primary: Color, accent: Color, background: Color) -> (str, str):
+def generate(primary: Color, accent: Color, background: Color, dark: bool) -> (str, str):
     for (key, value) in tgthemegen.properties.items():
-        yield (key, value if type(value) else value.calculate(primary, accent))
+        yield (key, value if type(value) else value.calculate(primary, accent, dark))

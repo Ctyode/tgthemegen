@@ -18,9 +18,21 @@ class ColorProperty:
         self.color = color
         self.transform = transform
 
-    def calculate(self, primary, accent):
-        pass  # TODO
-
+    def calculate(self, primary: Color, accent: Color, dark: bool) -> Color:
+        if self.source is ColorSource.primary:
+            return self.transform(primary)
+        elif self.source is ColorSource.accent:
+            return self.transform(accent)
+        elif self.source is ColorSource.background:
+            if dark:
+                return Color.from_int(0 ^ 0xFFFFFF00)
+            else:
+                return Color.from_int(0)
+        elif self.source is ColorSource.foreground:
+            if dark:
+                return Color.from_int(0 ^ 0xFFFFFF00)
+            else:
+                return Color.from_int(0)
 
 properties = {
     'windowBg': ColorProperty(source=ColorSource.background),
@@ -34,7 +46,7 @@ properties = {
     'windowBoldFgOver': 'windowBoldFg',
     'windowBgActive': ColorProperty(source=ColorSource.accent),  # TODO
     'windowFgActive': ColorProperty(source=ColorSource.foreground),  # TODO
-    'windowActiveTextFg': ColorProperty(source=ColorProperty.primary),
+    'windowActiveTextFg': ColorProperty(source=ColorSource.primary),
     'windowShadowFg': '#000000',
     'windowShadowFgFallback': '#f1f1f1',
     'shadowFg': '#00000018',

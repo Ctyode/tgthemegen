@@ -13,6 +13,7 @@ if __name__ == '__main__':
     parser.add_argument('--tiled', action='store_true')
     parser.add_argument('--background', required=True)
     parser.add_argument('--out', required=True)
+    parser.add_argument('--dark', action='store_true')
     args = parser.parse_args()
     here = os.path.dirname(os.path.abspath(__file__))
     with zipfile.ZipFile('{}.tdesktop-theme'.format(args.out), 'w') as myzip:
@@ -21,4 +22,5 @@ if __name__ == '__main__':
                        '\n'.join(list(map(lambda x: '{}: {};'.format(x[0], x[1]),
                                           generate(primary=Color.parse(args.color_primary),
                                                    accent=Color.parse(args.color_accent),
-                                                   background=Color.parse(args.color_background)).items()))))
+                                                   background=Color.parse(args.color_background),
+                                                   dark=args.dark)))))
