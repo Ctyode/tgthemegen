@@ -1,6 +1,10 @@
 import binascii
 import tgthemegen
-from tgthemegen import clamp, ColorProperty
+from enum import Enum
+
+
+def clamp(a: float, rng_min: float=0.0, rng_max: float=1.0) -> float:
+    return min(rng_max, max(rng_min, a))
 
 
 class ColorParseError(Exception):
@@ -48,6 +52,46 @@ class Color:
                      green=channels[1],
                      blue=channels[2],
                      alpha=channels[3])
+
+
+class ColorSource(Enum):
+    primary = 0
+    accent = 1
+    background = 2
+    foreground = 3
+    predefined = 4
+
+
+class ColorProperty:
+    def __init__(self, source: ColorSource, color: Color=None, transform=None):
+        self.source = source
+        self.color = color
+        self.transform = transform
+
+    def calculate(self, primary: Color, accent: Color, foreground: Color, background: Color) -> Color:
+        channels = []
+        if self.source is ColorSource.primary:
+            channels = primary.channels
+        elif self.source is ColorSource.accent:
+            channels = accent.channels
+        elif self.source is ColorSource.foreground:
+            channels = foreground.channels
+        elif self.source is ColorSource.background:
+            channels = background.channels
+        return Color.from_channels([c * t for c, t in zip(channels, self.transform)])
+
+    @staticmethod
+    def from_repr(r):
+        source = None
+        if r[0] == 'primary':
+            source = ColorSource.primary
+        if r[0] == 'accent':
+            source = ColorSource.accent
+        if r[0] == 'background':
+            source = ColorSource.background
+        if r[0] == 'foreground':
+            source = ColorSource.foreground
+        return ColorProperty(source=source, transform=r[1])
 
 
 def generate(primary: Color, accent: Color, foreground: Color, background: Color) -> (str, str):

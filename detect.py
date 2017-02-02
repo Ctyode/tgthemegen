@@ -1,4 +1,4 @@
-from tgthemegen import Color, ColorSource, ColorProperty
+from tgthemegen.generate import Color, ColorSource, ColorProperty
 
 import colorsys
 import binascii
