@@ -1,6 +1,6 @@
-import re
-import random
+import binascii
 import tgthemegen
+from tgthemegen import clamp
 
 
 class ColorParseError(Exception):
@@ -9,64 +9,47 @@ class ColorParseError(Exception):
 
 
 class Color:
+    def __init__(self, red: float, green: float, blue: float, alpha: float):
+        self.__red = clamp(red)
+        self.__green = clamp(green)
+        self.__blue = clamp(blue)
+        self.__alpha = clamp(alpha)
 
-    color_regex = re.compile(r'^[0-9a-fA-F]{6,8}$')
+    @property
+    def red(self):
+        return self.__red
 
-    def __init__(self, red: int, green: int, blue: int, alpha: int=None):
-        self.red = red
-        self.green = green
-        self.blue = blue
-        self.alpha = alpha
+    @property
+    def green(self):
+        return self.__green
 
-    @classmethod
-    def parse(cls, s: str):
-        s = s.strip('#')
-        if cls.color_regex.match(s): 
-            i = int(s, base=16)
-            if len(s) == 6:
-                return Color(red=(i & 0xff0000) >> 16,
-                             green=(i & 0x00ff00) >> 8,
-                             blue=(i & 0x0000ff))
-            elif len(s) == 8:
-                return Color(red=(i & 0xff000000) >> 24,
-                             green=(i & 0x00ff0000) >> 16,
-                             blue=(i & 0x0000ff00) >> 8,
-                             alpha=(i & 0x000000ff))
-            else:
-                raise ColorParseError(s)
-        else:
-            raise ColorParseError(s)
+    @property
+    def blue(self):
+        return self.__blue
 
-    def repr_int(self):
-        if self.alpha is not None:
-            return (
-                self.red >> 24 |
-                self.green >> 16 |
-                self.blue >> 8 |
-                self.alpha)
-        else:
-            return (
-                self.red >> 24 |
-                self.green >> 16 |
-                self.blue >> 8)
+    @property
+    def alpha(self):
+        return self.__alpha
 
-    @staticmethod
-    def from_int(i: int):
-        return Color(red=(i & 0xff000000) >> 24,
-                     green=(i & 0x00ff0000) >> 16,
-                     blue=(i & 0x0000ff00) >> 8,
-                     alpha=(i & 0x000000ff))
+    @property
+    def channels(self):
+        return self.__red, self.__green, self.__blue, self.__alpha
 
-    def __repr__(self):
-        return f'<{self.__class__.__name__} {str(self)}>'  # self.ты('пидор')
+    @property
+    def bytes(self):
+        return bytes([int(c * 255) for c in self.channels])
 
     def __str__(self):
-        if self.alpha is not None:
-            return f'#{self.red:02x}{self.green:02x}{self.blue:02x}{self.alpha:02x}'
-        else:
-            return f'#{self.red:02x}{self.green:02x}{self.blue:02x}'
+        return '#' + binascii.hexlify(self.bytes).decode()
+
+    @staticmethod
+    def from_channels(channels):
+        return Color(red=channels[0],
+                     green=channels[1],
+                     blue=channels[2],
+                     alpha=channels[3])
 
 
-def generate(primary: Color, accent: Color, background: Color, dark: bool) -> (str, str):
+def generate(primary: Color, accent: Color, foreground: Color, background: Color) -> (str, str):
     for (key, value) in tgthemegen.properties.items():
-        yield (key, value if type(value) else value.calculate(primary, accent, dark))
+        yield (key, value if type(value) else value.calculate(primary, accent, foreground, background))

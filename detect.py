@@ -1,53 +1,21 @@
-from enum import Enum
+from tgthemegen import Color, ColorSource, ColorProperty
 
-from tgthemegen.generate import Color
+import colorsys
 
-__author__ = 'rawieo, ctyode'  # self.__пидор__('ты')
-
-
-def clamp(a: float, rng_min: float=0.0, rng_max: float=1.0) -> float:
-    return min(rng_max, max(rng_min, a))
-
-
-class ColorSource(Enum):
-    primary = 0
-    accent = 1
-    background = 2
-    foreground = 3
-    predefined = 4
-
-
-class ColorProperty:
-    def __init__(self, source: ColorSource, color: Color=None, transform=None):
-        self.source = source
-        self.color = color
-        self.transform = transform
-
-    def calculate(self, primary: Color, accent: Color, foreground: Color, background: Color) -> Color:
-        channels = []
-        if self.source is ColorSource.primary:
-            channels = primary.channels
-        elif self.source is ColorSource.accent:
-            channels = accent.channels
-        elif self.source is ColorSource.foreground:
-            channels = foreground.channels
-        elif self.source is ColorSource.background:
-            channels = background.channels
-        return Color.from_channels([c * t for c, t in zip(channels, self.transform)])
-
-properties = {
-    'windowBg': ColorProperty(source=ColorSource.background),
-    'windowFg': ColorProperty(source=ColorSource.foreground),
-    'windowBgOver': ColorProperty(source=ColorSource.background, transform='todo'),  # TODO
-    'windowBgRipple': ColorProperty(source=ColorSource.background, transform='todo'),  # TODO
+# Breeze v3 by @vmorenomarin
+breeze_v3 = {
+    'windowBg': '#eff0f1',
+    'windowFg': '#000000',
+    'windowBgOver': '#f1f1f1',
+    'windowBgRipple': '#e5e5e5',
     'windowFgOver': 'windowFg',
-    'windowSubTextFg': ColorProperty(source=ColorSource.foreground, transform='todo'),  # TODO
-    'windowSubTextFgOver': ColorProperty(source=ColorSource.foreground, transform='todo'),  # TODO
-    'windowBoldFg': ColorProperty(source=ColorSource.foreground, transform='todo'),  # TODO
-    'windowBoldFgOver': 'windowBoldFg',
-    'windowBgActive': ColorProperty(source=ColorSource.accent),  # TODO
-    'windowFgActive': ColorProperty(source=ColorSource.foreground),  # TODO
-    'windowActiveTextFg': ColorProperty(source=ColorSource.primary),
+    'windowSubTextFg': '#7f8c8d',
+    'windowSubTextFgOver': '#31363b',
+    'windowBoldFg': '#222222',
+    'windowBoldFgOver': '#222222',
+    'windowBgActive': '#3daee9',
+    'windowFgActive': '#ffffff',
+    'windowActiveTextFg': '#168acd',
     'windowShadowFg': '#000000',
     'windowShadowFgFallback': '#f1f1f1',
     'shadowFg': '#00000018',
@@ -56,17 +24,17 @@ properties = {
     'imageBg': '#000000',
     'imageBgTransparent': '#ffffff',
     'activeButtonBg': 'windowBgActive',
-    'activeButtonBgOver': ColorProperty(source=ColorSource.accent, transform='todo'),  # TODO
-    'activeButtonBgRipple': ColorProperty(source=ColorSource.accent, transform='todo'),  # TODO
+    'activeButtonBgOver': '#39a5db',
+    'activeButtonBgRipple': '#2095d0',
     'activeButtonFg': 'windowFgActive',
     'activeButtonFgOver': 'activeButtonFg',
-    'activeButtonSecondaryFg': ColorProperty(source=ColorSource.foreground, transform='todo'),
+    'activeButtonSecondaryFg': '#cceeff',
     'activeButtonSecondaryFgOver': 'activeButtonSecondaryFg',
-    'activeLineFg': ColorProperty(source=ColorSource.primary),  # TODO
-    'activeLineFgError': '#cc434c',
+    'activeLineFg': '#37a1de',
+    'activeLineFgError': '#e48383',
     'lightButtonBg': 'windowBg',
-    'lightButtonBgOver': '#fef1f1',
-    'lightButtonBgRipple': '#fde3e3',
+    'lightButtonBgOver': '#93cee9',
+    'lightButtonBgRipple': '#c9e4f6',
     'lightButtonFg': 'windowActiveTextFg',
     'lightButtonFgOver': 'lightButtonFg',
     'attentionButtonFg': '#d14e4e',
@@ -80,15 +48,15 @@ properties = {
     'menuBg': 'windowBg',
     'menuBgOver': 'windowBgOver',
     'menuBgRipple': 'windowBgRipple',
-    'menuIconFg': '#a8a8a8',
-    'menuIconFgOver': '#999999',
+    'menuIconFg': '#31363b',
+    'menuIconFgOver': '#93cee9',
     'menuSubmenuArrowFg': '#373737',
     'menuFgDisabled': '#cccccc',
     'menuSeparatorFg': '#f1f1f1',
-    'scrollBarBg': '#00000053',
-    'scrollBarBgOver': '#0000007a',
-    'scrollBg': '#00000000',
-    'scrollBgOver': '#0000001a',
+    'scrollBarBg': '#3daee9',
+    'scrollBarBgOver': '#93cee9',
+    'scrollBg': '#bfc0c2',
+    'scrollBgOver': '#bfc0c2',
     'smallCloseIconFg': '#c7c7c7',
     'smallCloseIconFgOver': '#a3a3a3',
     'radialFg': 'windowFgActive',
@@ -96,7 +64,7 @@ properties = {
     'placeholderFg': 'windowSubTextFg',
     'placeholderFgActive': '#aaaaaa',
     'inputBorderFg': '#e0e0e0',
-    'filterInputBorderFg': '#e34053',
+    'filterInputBorderFg': '#54c3f3',
     'checkboxFg': '#b3b3b3',
     'sliderBgInactive': '#e1eaef',
     'sliderBgActive': 'windowBgActive',
@@ -133,7 +101,7 @@ properties = {
     'boxTitleCloseFgOver': 'cancelIconFgOver',
     'membersAboutLimitFg': 'windowSubTextFgOver',
     'contactsBg': 'windowBg',
-    'contactsBgOver': 'windowBgOver',
+    'contactsBgOver': '#93cee9',
     'contactsNameFg': 'boxTextFg',
     'contactsStatusFg': 'windowSubTextFg',
     'contactsStatusFgOver': 'windowSubTextFgOver',
@@ -163,9 +131,9 @@ properties = {
     'dialogsVerifiedIconBg': 'windowBgActive',
     'dialogsVerifiedIconFg': 'windowFgActive',
     'dialogsSendingIconFg': '#c1c1c1',
-    'dialogsSentIconFg': '#a8a8a8',
+    'dialogsSentIconFg': '#3daee9',
     'dialogsUnreadBg': 'windowBgActive',
-    'dialogsUnreadBgMuted': '#F2B0B8',
+    'dialogsUnreadBgMuted': '#31363b',
     'dialogsUnreadFg': 'windowFgActive',
     'dialogsBgOver': 'windowBgOver',
     'dialogsNameFgOver': 'windowBoldFgOver',
@@ -181,13 +149,13 @@ properties = {
     'dialogsUnreadBgOver': 'dialogsUnreadBg',
     'dialogsUnreadBgMutedOver': 'dialogsUnreadBgMuted',
     'dialogsUnreadFgOver': 'dialogsUnreadFg',
-    'dialogsBgActive': '#f77375',
+    'dialogsBgActive': '#3aacea',
     'dialogsNameFgActive': 'windowFgActive',
     'dialogsChatIconFgActive': 'dialogsNameFgActive',
     'dialogsDateFgActive': 'windowFgActive',
     'dialogsTextFgActive': 'windowFgActive',
     'dialogsTextFgServiceActive': 'dialogsTextFgActive',
-    'dialogsDraftFgActive': '#ffffff',
+    'dialogsDraftFgActive': '#c6e1f7',
     'dialogsVerifiedIconBgActive': 'dialogsTextFgActive',
     'dialogsVerifiedIconFgActive': 'dialogsBgActive',
     'dialogsSendingIconFgActive': '#ffffff99',
@@ -202,22 +170,22 @@ properties = {
     'searchedBarFg': 'windowSubTextFgOver',
     'topBarBg': 'windowBg',
     'emojiPanBg': 'windowBg',
-    'emojiPanCategories': '#f7f7f7',
+    'emojiPanCategories': 'windowBg',
     'emojiPanHeaderFg': 'windowSubTextFg',
-    'emojiPanHeaderBg': '#fffffff2',
+    'emojiPanHeaderBg': 'emojiPanBg',
     'stickerPanDeleteBg': '#000000cc',
     'stickerPanDeleteFg': 'windowFgActive',
     'stickerPreviewBg': '#ffffffb0',
     'historyTextInFg': 'windowFg',
-    'historyTextOutFg': 'windowBg',
+    'historyTextOutFg': 'windowFg',
     'historyCaptionInFg': 'historyTextInFg',
     'historyCaptionOutFg': 'historyTextOutFg',
     'historyFileNameInFg': 'historyTextInFg',
     'historyFileNameOutFg': 'historyTextOutFg',
-    'historyOutIconFg': '#F6133E',
-    'historyOutIconFgSelected': '#ffffff',
+    'historyOutIconFg': 'dialogsSentIconFg',
+    'historyOutIconFgSelected': '#4da79f',
     'historyIconFgInverted': 'windowFgActive',
-    'historySendingOutIconFg': '#9dc2d9',
+    'historySendingOutIconFg': '#98d292',
     'historySendingInIconFg': '#a0adb5',
     'historySendingInvertedIconFg': '#ffffffc8',
     'historySystemBg': '#89a0b47f',
@@ -245,54 +213,54 @@ properties = {
     'historyPeer8NameFg': '#ce671b',
     'historyPeer8UserpicBg': '#faa774',
     'historyPeerUserpicFg': 'windowFgActive',
-    'historyScrollBarBg': '#00000040',
-    'historyScrollBarBgOver': '#00000053',
-    'historyScrollBg': '#00000000',
-    'historyScrollBgOver': '#0000001a',
+    'historyScrollBarBg': '#3daee9',
+    'historyScrollBarBgOver': '#93cee9',
+    'historyScrollBg': '#bfc0c2',
+    'historyScrollBgOver': '#bfc0c2',
     'msgInBg': 'windowBg',
     'msgInBgSelected': '#c2dcf2',
-    'msgOutBg': '#ff99a5',
-    'msgOutBgSelected': '#faa7a8',
+    'msgOutBg': '#F0FDFF',
+    'msgOutBgSelected': '#b7dbdb',
     'msgSelectOverlay': '#358cd44c',
     'msgStickerOverlay': '#358cd47f',
     'msgInServiceFg': 'windowActiveTextFg',
     'msgInServiceFgSelected': 'windowActiveTextFg',
-    'msgOutServiceFg': 'windowActiveTextFg',
-    'msgOutServiceFgSelected': 'windowActiveTextFg',
+    'msgOutServiceFg': '#3a8e26',
+    'msgOutServiceFgSelected': '#367570',
     'msgInShadow': '#748ea229',
     'msgInShadowSelected': '#548dbb29',
-    'msgOutShadow': '#748ea229',
-    'msgOutShadowSelected': '#548dbb29',
-    'msgInDateFg': '#c1c1c1',
+    'msgOutShadow': '#3ac34740',
+    'msgOutShadowSelected': '#37a78e40',
+    'msgInDateFg': '#a0acb6',
     'msgInDateFgSelected': '#6a9cc5',
-    'msgOutDateFg': '#ffffff',
-    'msgOutDateFgSelected': '#a0acb6',
+    'msgOutDateFg': '#807e7d',
+    'msgOutDateFgSelected': '#50a79c',
     'msgServiceFg': 'windowFgActive',
-    'msgServiceBg': '#00558059',
-    'msgServiceBgSelected': '#62afdda2',
+    'msgServiceBg': '#556e837f',
+    'msgServiceBgSelected': '#8ca0b3a2',
     'msgInReplyBarColor': 'activeLineFg',
     'msgInReplyBarSelColor': 'activeLineFg',
     'msgOutReplyBarColor': 'historyOutIconFg',
     'msgOutReplyBarSelColor': 'historyOutIconFgSelected',
     'msgImgReplyBarColor': 'msgServiceFg',
     'msgInMonoFg': '#4e7391',
-    'msgOutMonoFg': '#4e7391',
+    'msgOutMonoFg': '#469165',
     'msgDateImgFg': 'msgServiceFg',
     'msgDateImgBg': '#00000054',
     'msgDateImgBgOver': '#00000074',
     'msgDateImgBgSelected': '#1c4a7187',
     'msgFileThumbLinkInFg': 'lightButtonFg',
     'msgFileThumbLinkInFgSelected': 'lightButtonFgOver',
-    'msgFileThumbLinkOutFg': 'lightButtonFg',
-    'msgFileThumbLinkOutFgSelected': 'lightButtonFgOver',
+    'msgFileThumbLinkOutFg': '#5eba5b',
+    'msgFileThumbLinkOutFgSelected': '#31a298',
     'msgFileInBg': 'windowBgActive',
     'msgFileInBgOver': '#4eade3',
-    'msgFileInBgSelected': '#FFFFFF',
-    'msgFileOutBg': '#ffffff',
-    'msgFileOutBgOver': '#ffffff',
-    'msgFileOutBgSelected': '#ffffff',
-    'msgFile1Bg': '#ffffff',
-    'msgFile1BgDark': '#ffffff',
+    'msgFileInBgSelected': '#51a3d3',
+    'msgFileOutBg': '#3daee9',
+    'msgFileOutBgOver': '#6bc272',
+    'msgFileOutBgSelected': '#5fb389',
+    'msgFile1Bg': '#72b1df',
+    'msgFile1BgDark': '#5c9ece',
     'msgFile1BgOver': '#5294c4',
     'msgFile1BgSelected': '#5099d0',
     'msgFile2Bg': '#61b96e',
@@ -307,14 +275,14 @@ properties = {
     'msgFile4BgDark': '#e6a561',
     'msgFile4BgOver': '#dc9c5a',
     'msgFile4BgSelected': '#b19d84',
-    'msgWaveformInActive': '#windowBgActive',
+    'msgWaveformInActive': 'windowBgActive',
     'msgWaveformInActiveSelected': '#51a3d3',
-    'msgWaveformInInactive': '#d4dee6',
+    'msgWaveformInInactive': '#807e7d',
     'msgWaveformInInactiveSelected': '#9cc1e1',
-    'msgWaveformOutActive': '#ffffff',
-    'msgWaveformOutActiveSelected': 'e34053',
-    'msgWaveformOutInactive': '#f77375',
-    'msgWaveformOutInactiveSelected': '#ffffff',
+    'msgWaveformOutActive': '#31363b',
+    'msgWaveformOutActiveSelected': '#6badad',
+    'msgWaveformOutInactive': '#807e7d',
+    'msgWaveformOutInactiveSelected': '#91c3c3',
     'msgBotKbOverBgAdd': '#ffffff20',
     'msgBotKbIconFg': 'msgServiceFg',
     'msgBotKbRippleBg': '#00000020',
@@ -343,19 +311,19 @@ properties = {
     'historyReplyCancelFg': 'cancelIconFg',
     'historyReplyCancelFgOver': 'cancelIconFgOver',
     'historyComposeButtonBg': 'historyComposeAreaBg',
-    'historyComposeButtonBgOver': 'windowBgOver',
+    'historyComposeButtonBgOver': '#93cee9',
     'historyComposeButtonBgRipple': 'windowBgRipple',
     'overviewCheckBg': '#00000040',
     'overviewCheckFg': 'windowBg',
     'overviewCheckFgActive': 'windowBg',
     'overviewPhotoSelectOverlay': '#40ace333',
     'profileStatusFgOver': '#7c99b2',
-    'notificationsBoxMonitorFg': 'windowFg',
+    'notificationsBoxMonitorFg': '#eff0f1B2',
     'notificationsBoxScreenBg': 'dialogsBgActive',
     'notificationSampleUserpicFg': 'windowBgActive',
-    'notificationSampleCloseFg': '#d7d7d7',
-    'notificationSampleTextFg': '#d7d7d7',
-    'notificationSampleNameFg': '#939393',
+    'notificationSampleCloseFg': 'windowSubTextFg',
+    'notificationSampleTextFg': 'windowSubTextFg',
+    'notificationSampleNameFg': 'windowSubTextFg',
     'mainMenuBg': 'windowBg',
     'mainMenuCoverBg': 'dialogsBgActive',
     'mainMenuCoverFg': 'windowFgActive',
@@ -381,7 +349,7 @@ properties = {
     'mediaviewControlFg': 'windowFgActive',
     'mediaviewCaptionBg': '#11111180',
     'mediaviewCaptionFg': 'mediaviewControlFg',
-    'mediaviewTextLinkFg': '#ffffff',
+    'mediaviewTextLinkFg': '#91d9ff',
     'mediaviewSaveMsgBg': 'toastBg',
     'mediaviewSaveMsgFg': 'toastFg',
     'mediaviewPlaybackActive': '#c7c7c7',
@@ -394,3 +362,33 @@ properties = {
     'mediaviewTransparentBg': '#ffffff',
     'mediaviewTransparentFg': '#cccccc',
     'notificationBg': 'windowBg'}
+
+
+def detect_property(value: Color, accent: Color, primary: Color, foreground: Color, background: Color):
+    value_hsv = colorsys.rgb_to_hsv(*value.channels())
+    accent_hsv = colorsys.rgb_to_hsv(*accent.channels())
+    primary_hsv = colorsys.rgb_to_hsv(*primary.channels())
+    foreground_hsv = colorsys.rgb_to_hsv(*foreground.channels())
+    background_hsv = colorsys.rgb_to_hsv(*background.channels())
+    near_options = [
+        (accent_hsv, (accent, ColorSource.accent)),
+        (primary_hsv, (primary, ColorSource.primary)),
+        (foreground_hsv, (foreground, ColorSource.foreground)),
+        (background_hsv, (background, ColorSource.background))]
+
+    def similarity(sample_a, sample_b):
+        return 3.0 - (
+            abs(sample_a[0] - sample_b[0]) +
+            abs(sample_a[1] - sample_b[1]) +
+            abs(sample_a[2] - sample_b[2]))
+    near_options.sort(key=lambda x: similarity(x[1], value_hsv))
+    nearest_source = near_options[0][1]
+    return ColorProperty(nearest_source[1],
+                         transform=[a / b for a, b in zip(value.channels, nearest_source[0].channels)])
+
+
+def detect_properties(sample, accent, primary, foreground, background):
+    props = {}
+    for k, v in sample.items():
+        props[k] = detect_property(v, accent, primary, foreground, background)
+    return props
