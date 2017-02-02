@@ -1,6 +1,6 @@
 import binascii
 import tgthemegen
-from tgthemegen import clamp
+from tgthemegen import clamp, ColorProperty
 
 
 class ColorParseError(Exception):
@@ -52,4 +52,4 @@ class Color:
 
 def generate(primary: Color, accent: Color, foreground: Color, background: Color) -> (str, str):
     for (key, value) in tgthemegen.properties.items():
-        yield (key, value if type(value) else value.calculate(primary, accent, foreground, background))
+        yield (key, ColorProperty.from_repr(value.calculate(primary, accent, foreground, background)))

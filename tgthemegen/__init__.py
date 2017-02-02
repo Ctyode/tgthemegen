@@ -35,6 +35,20 @@ class ColorProperty:
             channels = background.channels
         return Color.from_channels([c * t for c, t in zip(channels, self.transform)])
 
+    @staticmethod
+    def from_repr(r):
+        source = None
+        if r[0] == 'primary':
+            source = ColorSource.primary
+        if r[0] == 'accent':
+            source = ColorSource.accent
+        if r[0] == 'background':
+            source = ColorSource.background
+        if r[0] == 'foreground':
+            source = ColorSource.foreground
+        return ColorProperty(source=source, transform=r[1])
+
+
 properties = {
     'windowBg': ColorProperty(source=ColorSource.background),
     'windowFg': ColorProperty(source=ColorSource.foreground),

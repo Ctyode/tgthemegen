@@ -373,7 +373,7 @@ def detect_property(value: Color, accent: Color, primary: Color, foreground: Col
     background_hsv = colorsys.rgb_to_hsv(*background.channels())
     near_options = [
         (accent_hsv, (accent, 'accent')),
-        (primary_hsv, (primary, ColorSource.primary)),
+        (primary_hsv, (primary, 'primary')),
         (foreground_hsv, (foreground, 'foreground')),
         (background_hsv, (background, 'background'))]
 
