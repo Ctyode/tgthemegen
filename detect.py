@@ -1,6 +1,7 @@
 from tgthemegen import Color, ColorSource, ColorProperty
 
 import colorsys
+import binascii
 
 # Breeze v3 by @vmorenomarin
 breeze_v3 = {
@@ -371,10 +372,10 @@ def detect_property(value: Color, accent: Color, primary: Color, foreground: Col
     foreground_hsv = colorsys.rgb_to_hsv(*foreground.channels())
     background_hsv = colorsys.rgb_to_hsv(*background.channels())
     near_options = [
-        (accent_hsv, (accent, ColorSource.accent)),
+        (accent_hsv, (accent, 'accent')),
         (primary_hsv, (primary, ColorSource.primary)),
-        (foreground_hsv, (foreground, ColorSource.foreground)),
-        (background_hsv, (background, ColorSource.background))]
+        (foreground_hsv, (foreground, 'foreground')),
+        (background_hsv, (background, 'background'))]
 
     def similarity(sample_a, sample_b):
         return 3.0 - (
@@ -383,12 +384,15 @@ def detect_property(value: Color, accent: Color, primary: Color, foreground: Col
             abs(sample_a[2] - sample_b[2]))
     near_options.sort(key=lambda x: similarity(x[1], value_hsv))
     nearest_source = near_options[0][1]
-    return ColorProperty(nearest_source[1],
-                         transform=[a / b for a, b in zip(value.channels, nearest_source[0].channels)])
+    return nearest_source[1], [a / b for a, b in zip(value.channels, nearest_source[0].channels)]
 
 
 def detect_properties(sample, accent, primary, foreground, background):
     props = {}
     for k, v in sample.items():
-        props[k] = detect_property(v, accent, primary, foreground, background)
+        if v[0] == '#':
+            color = Color.from_channels([b / 255 for b in binascii.unhexlify(v.encode()[1:])])
+            props[k] = detect_property(color, accent, primary, foreground, background)
+        else:
+            props[k] = v
     return props
