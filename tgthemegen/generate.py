@@ -100,4 +100,7 @@ class ColorProperty:
 
 def generate(primary: Color, accent: Color, foreground: Color, background: Color) -> (str, str):
     for (key, value) in tgthemegen.properties.items():
-        yield (key, ColorProperty.from_repr(value.calculate(primary, accent, foreground, background)))
+        if type(value) == list:
+            yield (key, ColorProperty.from_repr(value).calculate(primary, accent, foreground, background))
+        else:
+            yield key, value

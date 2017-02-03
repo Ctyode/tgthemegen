@@ -2,6 +2,7 @@ from tgthemegen.generate import Color, ColorSource, ColorProperty
 
 import colorsys
 import binascii
+import pprint
 
 # Breeze v3 by @vmorenomarin
 breeze_v3 = {
@@ -401,7 +402,7 @@ def detect_properties(sample, accent: Color, primary: Color, foreground: Color, 
 
 
 if __name__ == '__main__':
-    print(detect_properties(
+    pprint.pprint(detect_properties(
         sample=breeze_v3,
         accent=Color.parse('#3daee9'),
         primary=Color.parse('#3daee9'),

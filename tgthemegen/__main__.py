@@ -10,6 +10,7 @@ if __name__ == '__main__':
     parser.add_argument('--color-primary', required=True)
     parser.add_argument('--color-accent', required=True)
     parser.add_argument('--color-background', required=True)
+    parser.add_argument('--color-foreground', required=True)
     parser.add_argument('--tiled', action='store_true')
     parser.add_argument('--background', required=True)
     parser.add_argument('--out', required=True)
@@ -23,4 +24,4 @@ if __name__ == '__main__':
                                           generate(primary=Color.parse(args.color_primary),
                                                    accent=Color.parse(args.color_accent),
                                                    background=Color.parse(args.color_background),
-                                                   dark=args.dark)))))
+                                                   foreground=Color.parse(args.color_foreground))))))
