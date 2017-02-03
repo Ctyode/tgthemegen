@@ -51,7 +51,11 @@ class Color:
         return Color(red=channels[0],
                      green=channels[1],
                      blue=channels[2],
-                     alpha=channels[3])
+                     alpha=1.0 if len(channels) < 4 else channels[3])
+
+    @staticmethod
+    def parse(s):
+        return Color.from_channels([b / 255 for b in binascii.unhexlify(s.encode()[1:])])
 
 
 class ColorSource(Enum):

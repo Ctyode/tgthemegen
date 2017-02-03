@@ -366,28 +366,28 @@ breeze_v3 = {
 
 
 def detect_property(value: Color, accent: Color, primary: Color, foreground: Color, background: Color):
-    value_hsv = colorsys.rgb_to_hsv(*value.channels())
-    accent_hsv = colorsys.rgb_to_hsv(*accent.channels())
-    primary_hsv = colorsys.rgb_to_hsv(*primary.channels())
-    foreground_hsv = colorsys.rgb_to_hsv(*foreground.channels())
-    background_hsv = colorsys.rgb_to_hsv(*background.channels())
+    value_hsv = colorsys.rgb_to_hsv(*value.channels[:3])
+    accent_hsv = colorsys.rgb_to_hsv(*accent.channels[:3])
+    primary_hsv = colorsys.rgb_to_hsv(*primary.channels[:3])
+    foreground_hsv = colorsys.rgb_to_hsv(*foreground.channels[:3])
+    background_hsv = colorsys.rgb_to_hsv(*background.channels[:3])
     near_options = [
-        (accent_hsv, (accent, 'accent')),
-        (primary_hsv, (primary, 'primary')),
-        (foreground_hsv, (foreground, 'foreground')),
-        (background_hsv, (background, 'background'))]
+        (accent_hsv, accent, 'accent'),
+        (primary_hsv, primary, 'primary'),
+        (foreground_hsv, foreground, 'foreground'),
+        (background_hsv, background, 'background')]
 
     def similarity(sample_a, sample_b):
         return 3.0 - (
             abs(sample_a[0] - sample_b[0]) +
             abs(sample_a[1] - sample_b[1]) +
             abs(sample_a[2] - sample_b[2]))
-    near_options.sort(key=lambda x: similarity(x[1], value_hsv))
-    nearest_source = near_options[0][1]
-    return nearest_source[1], [a / b for a, b in zip(value.channels, nearest_source[0].channels)]
+    near_options.sort(key=lambda x: similarity(x[1].channels, value_hsv))
+    nearest_source = near_options[0]
+    return nearest_source[1], [(a / b if b > 0.0 else 1.0) for a, b in zip(value.channels, nearest_source[0])]
 
 
-def detect_properties(sample, accent, primary, foreground, background):
+def detect_properties(sample, accent: Color, primary: Color, foreground: Color, background: Color):
     props = {}
     for k, v in sample.items():
         if v[0] == '#':
@@ -396,3 +396,12 @@ def detect_properties(sample, accent, primary, foreground, background):
         else:
             props[k] = v
     return props
+
+
+if __name__ == '__main__':
+    print(detect_properties(
+        sample=breeze_v3,
+        accent=Color.parse('#3daee9'),
+        primary=Color.parse('#3daee9'),
+        foreground=Color.parse('#000000'),
+        background=Color.parse('#eff0f1')))
