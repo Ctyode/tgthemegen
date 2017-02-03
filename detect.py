@@ -384,7 +384,9 @@ def detect_property(value: Color, accent: Color, primary: Color, foreground: Col
             abs(sample_a[2] - sample_b[2]))
     near_options.sort(key=lambda x: similarity(x[1].channels, value_hsv))
     nearest_source = near_options[0]
-    return nearest_source[1], [(a / b if b > 0.0 else 1.0) for a, b in zip(value.channels, nearest_source[0])]
+    return [
+        nearest_source[2],
+        [(a / b if b > 0.0 else 1.0) for a, b in zip(value.channels, nearest_source[0])]]
 
 
 def detect_properties(sample, accent: Color, primary: Color, foreground: Color, background: Color):
